@@ -40,8 +40,8 @@ namespace {
 		Graphics::setRenderState(Kore::DepthTest, true);
 
 		program->set();
-		vertices->set();
-		indices->set();
+		Graphics::setVertexBuffer(*vertices);
+		Graphics::setIndexBuffer(*indices);
 		
 		Graphics::setFloat(tessLevelInnerLocation, tessLevelInner);
 		Graphics::setFloat(tessLevelOuterLocation, tessLevelOuter);
@@ -69,7 +69,7 @@ namespace {
 }
 
 int kore(int argc, char** argv) {
-	Application* app = new Application(argc, argv, (int)width, (int)height, false, "ShaderTest");
+	Application* app = new Application(argc, argv, (int)width, (int)height, false, false, "ShaderTest");
 	app->setCallback(update);
 
 	FileReader vs("test.vert");
