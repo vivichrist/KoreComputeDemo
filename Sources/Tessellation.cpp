@@ -1,6 +1,4 @@
 #include "pch.h"
-
-#include <Kore/Application.h>
 #include <Kore/IO/FileReader.h>
 #include <Kore/Graphics/Graphics.h>
 #include <Kore/Graphics/Shader.h>
@@ -69,8 +67,22 @@ namespace {
 }
 
 int kore(int argc, char** argv) {
-	Application* app = new Application(argc, argv, (int)width, (int)height, false, false, "ShaderTest");
-	app->setCallback(update);
+	Kore::System::setName("Tesselation");
+	Kore::System::setup();
+	Kore::WindowOptions options;
+	options.title = "Tesselation";
+	options.width = 1024;
+	options.height = 768;
+	options.x = 100;
+	options.y = 100;
+	options.targetDisplay = -1;
+	options.mode = WindowModeWindow;
+	options.rendererOptions.depthBufferBits = 16;
+	options.rendererOptions.stencilBufferBits = 8;
+	options.rendererOptions.textureFormat = 0;
+	options.rendererOptions.antialiasing = 0;
+	Kore::System::initWindow(options);
+	Kore::System::setCallback(update);
 
 	FileReader vs("test.vert");
 	FileReader fs("test.frag");
@@ -151,7 +163,7 @@ int kore(int argc, char** argv) {
 		indices->unlock();
 	}
 
-	app->start();
+	Kore::System::start();
 
 	return 0;
 }
