@@ -67,10 +67,10 @@ namespace {
 }
 
 int kore(int argc, char** argv) {
-	Kore::System::setName("Tesselation");
+	Kore::System::setName("Tessellation");
 	Kore::System::setup();
 	Kore::WindowOptions options;
-	options.title = "Tesselation";
+	options.title = "Tessellation";
 	options.width = 1024;
 	options.height = 768;
 	options.x = 100;
