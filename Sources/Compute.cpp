@@ -19,6 +19,8 @@ namespace {
 	TextureUnit texunit;
 	ConstantLocation offset;
 	ComputeShader* computeShader;
+	ComputeTextureUnit computeTexunit;
+	ComputeConstantLocation computeLocation;
 	
 	float width = 1024;
 	float height = 768;
@@ -26,9 +28,14 @@ namespace {
 	void update() {
 		Graphics::begin();
 		Graphics::clear(Graphics::ClearColorFlag | Graphics::ClearDepthFlag);
+
+		Kore::Compute::setShader(computeShader);
+		Kore::Compute::setTexture(computeTexunit, texture);
+		Kore::Compute::setFloat(computeLocation, 0);
+		Kore::Compute::compute(texture->width, texture->height, 1);
 		
 		program->set();
-		Graphics::setMatrix(offset, mat3::RotationZ((float)Kore::System::time()));
+		Graphics::setMatrix(offset, mat3::RotationZ(0));// (float)Kore::System::time()));
 		Graphics::setVertexBuffer(*vertices);
 		Graphics::setIndexBuffer(*indices);
 		Graphics::setTexture(texunit, texture);
@@ -57,13 +64,14 @@ int kore(int argc, char** argv) {
 	Kore::System::initWindow(options);
 	Kore::System::setCallback(update);
 
+	//texture = new Texture("parrot.png");
+	texture = new Texture(256, 256, Image::Format::RGBA128, false);
+
 	FileReader cs("test.comp");
 	computeShader = new ComputeShader(cs.readAll(), cs.size());
 
-	Kore::Compute::setShader(computeShader);
-	Kore::Compute::compute(16, 16, 1);
-
-	texture = new Texture("parrot.png");
+	computeTexunit = computeShader->getTextureUnit("destTex");
+	computeLocation = computeShader->getConstantLocation("roll");
 
 	FileReader vs("shader.vert");
 	FileReader fs("shader.frag");
