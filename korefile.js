@@ -1,5 +1,5 @@
-var solution = new Solution('Tessellation');
-var project = new Project('Tessellation');
+var solution = new Solution('Compute');
+var project = new Project('Compute');
 
 project.addFile('Sources/**');
 project.setDebugDir('Deployment');
