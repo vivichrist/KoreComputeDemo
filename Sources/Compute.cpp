@@ -1,6 +1,7 @@
 #include "pch.h"
 #include <Kore/IO/FileReader.h>
 #include <Kore/Graphics4/Graphics.h>
+#include <Kore/Graphics4/PipelineState.h>
 #include <Kore/Graphics4/Shader.h>
 #include <Kore/Math/Matrix.h>
 #include <Kore/System.h>
@@ -12,7 +13,7 @@ using namespace Kore;
 namespace {
 	Graphics4::Shader* vertexShader;
 	Graphics4::Shader* fragmentShader;
-	Graphics4::Program* program;
+	Graphics4::PipelineState* pipeline;
 	Graphics4::VertexBuffer* vertices;
 	Graphics4::IndexBuffer* indices;
 	Graphics4::Texture* texture;
@@ -30,11 +31,11 @@ namespace {
 		Graphics4::clear(Graphics4::ClearColorFlag | Graphics4::ClearDepthFlag);
 
 		Kore::Compute::setShader(computeShader);
-		Kore::Compute::setTexture(computeTexunit, texture);
+		Kore::Compute::setSampledTexture(computeTexunit, texture);
 		Kore::Compute::setFloat(computeLocation, 0);
 		Kore::Compute::compute(texture->width, texture->height, 1);
 		
-		program->set();
+		Graphics4::setPipeline(pipeline);
 		Graphics4::setMatrix(offset, mat3::RotationZ(0));// (float)Kore::System::time()));
 		Graphics4::setVertexBuffer(*vertices);
 		Graphics4::setIndexBuffer(*indices);
@@ -80,13 +81,15 @@ int kore(int argc, char** argv) {
 	Graphics4::VertexStructure structure;
 	structure.add("pos", Graphics4::Float3VertexData);
 	structure.add("tex", Graphics4::Float2VertexData);
-	program = new Graphics4::Program;
-	program->setVertexShader(vertexShader);
-	program->setFragmentShader(fragmentShader);
-	program->link(structure);
+	pipeline = new Graphics4::PipelineState;
+	pipeline->inputLayout[0] = &structure;
+	pipeline->inputLayout[1] = nullptr;
+	pipeline->vertexShader = vertexShader;
+	pipeline->fragmentShader = fragmentShader;
+	pipeline->compile();
 
-	texunit = program->getTextureUnit("texsampler");
-	offset = program->getConstantLocation("mvp");
+	texunit = pipeline->getTextureUnit("texsampler");
+	offset = pipeline->getConstantLocation("mvp");
 
 	vertices = new Graphics4::VertexBuffer(3, structure);
 	float* v = vertices->lock();
