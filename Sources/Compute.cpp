@@ -31,7 +31,7 @@ namespace {
 		Graphics4::clear(Graphics4::ClearColorFlag | Graphics4::ClearDepthFlag);
 
 		Kore::Compute::setShader(computeShader);
-		Kore::Compute::setSampledTexture(computeTexunit, texture);
+		Kore::Compute::setTexture(computeTexunit, texture, Compute::Write);
 		Kore::Compute::setFloat(computeLocation, 0);
 		Kore::Compute::compute(texture->width, texture->height, 1);
 		
