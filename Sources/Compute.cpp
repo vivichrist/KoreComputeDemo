@@ -52,7 +52,7 @@ int kore(int argc, char** argv) {
 	Kore::System::setCallback(update);
 
 	//texture = new Texture("parrot.png");
-	texture = new Graphics4::Texture(256, 256, Graphics4::Image::Format::RGBA128, false);
+	texture = new Graphics4::Texture(256, 256, Graphics4::Image::RGBA128, false);
 
 	FileReader cs("test.comp");
 	computeShader = new ComputeShader(cs.readAll(), cs.size());
